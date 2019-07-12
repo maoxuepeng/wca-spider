@@ -9,6 +9,7 @@ from scrapy.http import FormRequest
 from scrapy.http import Request
 from scrapy.loader import ItemLoader
 from scrapy.loader.processors import MapCompose, Join
+from scrapy.selector import Selector
 import urlparse
 import os
 import logging
@@ -91,63 +92,55 @@ class WCASpider(scrapy.spiders.Spider):
             logging.info('Member link of %s scheduled', memeber_link)
 
     def _parse_member_detail_page(self, response):
-        member_item = ItemLoader(item=MemberItem(), response=response)
+        selector = Selector(text=response.text)
 
-        #member_contact_item = MemberContactItem()
-        member_item.add_xpath(
+        member_item = MemberItem()
+        member_item.add_value(
             'wca_id', 
-            '//*[@class="member_id"][1]/text()',
-            MapCompose(lambda i: i.strip('ID:').strip()))
-        member_item.add_xpath(
+            xpaths.get_member_id(selector))
+        member_item.add_value(
             'name', 
-            '//*[@class="member_name"][1]/text()',
-            MapCompose(lambda i: i.strip('ID:').strip()))
-        member_item.add_xpath(
+            xpaths.get_member_name(selector))
+        member_item.add_value(
             'logo_url',
-            '//*[@id="content_right"]/div[2]/div[1]/img/@src')
-        member_item.add_xpath(
+            xpaths.get_member_logo_url(selector))
+        member_item.add_value(
             'country',
-            '//*[@class="office_row"][1]/div[@class="office_country"][1]/text()')
-        member_item.add_xpath(
+            xpaths.get_member_country(selector))
+        member_item.add_value(
             'city',
-            '//*[@class="office_row"][1]/div[@class="office_entry"][1]/a[1]/text()')
-        member_item.add_xpath(
+            xpaths.get_member_city(selector))
+        member_item.add_value(
             'enrolled_since',
-            '//*[@class="member_expire_mainbox"][1]/div[@class="member_expire_entry"][1]/div[@class="member_expire_value"][1]/text()')
-        member_item.add_xpath(
+            xpaths.get_member_enrolled_since(selector))
+        member_item.add_value(
             'membership_expires',
-            '//*[@class="member_expire_mainbox"][1]/div[@class="member_expire_entry"][2]/div[@class="member_expire_value"][1]/text()')
-        member_item.add_xpath(
+            xpaths.get_member_expires(selector))
+        member_item.add_value(
             'description',
-            '//*[@class="memberprofile_row memberprofile_detail"][1]/text()')
-        member_item.add_xpath(
+            xpaths.get_member_description(selector))
+        member_item.add_value(
             'address',
-            '//*[@id="content_right"]/table/tbody/tr[td[1]="Address:"]/td[2]/span[1]/text()',
-            MapCompose(lambda i: i.replace('<br>', '')))
-        member_item.add_xpath(
+            xpaths.get_member_address(selector))
+        member_item.add_value(
             'telephone',
-            '//*[@id="content_right"]/table/tbody/tr[td[1]="Telephone:"]/td[2]/text()',
-            MapCompose(lambda i: i.replace('.', '')))
-        member_item.add_xpath(
+            xpaths.get_member_telephone(selector))
+        member_item.add_value(
             'fax',
-            '//*[@id="content_right"]/table/tbody/tr[td[1]="Fax:"]/td[2]/text()',
-            MapCompose(lambda i: i.replace('<br>', '')))
-        member_item.add_xpath(
+            xpaths.get_member_fax(selector))
+        member_item.add_value(
             'emergency_call',
-            '//*[@id="content_right"]/table/tbody/tr[td[1]="Emergency Call:"]/td[2]/text()',
-            MapCompose(lambda i: i.replace('<br>', '')))
-        member_item.add_xpath(
+            xpaths.get_member_emergency_call(selector))
+        member_item.add_value(
             'website',
-            '//*[@id="content_right"]/table/tbody/tr[td[1]="Website:"]/td[2]/a[1]/@href')
-        member_item.add_xpath(
+            xpaths.get_member_website(selector))
+        member_item.add_value(
             'email',
-            '//*[@id="content_right"]/table/tbody/tr[td[1]="Email:"]/td[2]/span/a/text()',
-            MapCompose(unicode.strip), Join())
+            xpaths.get_member_email(selector))
 
-        member_item.add_xpath(
+        member_item.add_value(
             'contact',
-            '//*[@id="content_right"]/table/tbody/tr[td[1]="Contact:"]/following-sibling::*/td/text()',
-            MapCompose(unicode.strip))
+            xpaths.get_member_contact(selector))
         
         return member_item
 

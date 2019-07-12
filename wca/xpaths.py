@@ -56,9 +56,93 @@ def _get_next_member_list_page_url(url):
 
 ## parse memeber detail page
 
-def get_member_id(member_detail_page):
-    value = Selector(text=member_detail_page)\
+def get_member_id(member_detail_pages_selector):
+    value = member_detail_pages_selector\
         .xpath('//*[@class="member_id"][1]/text()')\
         .extract_first()
     value = value.lstrip('ID:').strip()
     return value
+
+def get_member_name(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@class="member_name"][1]/text()')\
+        .extract_first().strip()
+    return value
+
+def get_member_logo_url(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@id="content_right"]/div[2]/div[1]/img/@src')\
+        .extract_first().strip()
+    return value
+
+def get_member_country(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@class="office_row"][1]/div[@class="office_country"][1]/text()')\
+        .extract_first().strip()
+    return value
+
+def get_member_city(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@class="office_row"][1]/div[@class="office_entry"][1]/a[1]/text()')\
+        .extract_first().strip()
+    return value
+
+def get_member_enrolled_since(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@class="member_expire_mainbox"][1]/div[@class="member_expire_entry"][1]/div[@class="member_expire_value"][1]/text()')\
+        .extract_first().strip()
+    return value
+
+def get_member_expires(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@class="member_expire_mainbox"][1]/div[@class="member_expire_entry"][2]/div[@class="member_expire_value"][1]/text()')\
+        .extract_first().strip()
+    return value
+
+def get_member_description(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@class="memberprofile_row memberprofile_detail"][1]/text()')\
+        .extract_first().strip()
+    return value
+
+def get_member_address(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Address:"]/td[2]/span[1]/text()')\
+        .extract_first().strip()
+    return value.replace('<br>', '')
+
+def get_member_telephone(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Telephone:"]/td[2]/text()')\
+        .extract_first().strip()
+    return value.replace('.', '')
+
+def get_member_fax(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Fax:"]/td[2]/text()')\
+        .extract_first().strip()
+    return value.replace('.', '')
+
+def get_member_emergency_call(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Emergency Call:"]/td[2]/text()')\
+        .extract_first().strip()
+    return value.replace('.', '')
+
+def get_member_website(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Website:"]/td[2]/a[1]/@href')\
+        .extract_first().strip()
+    return value
+
+def get_member_email(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Email:"]/td[2]/span/a/text()')\
+        .extract().jion()
+    return value
+
+def get_member_contact(member_detail_pages_selector):
+    value = member_detail_pages_selector\
+        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Contact:"]/following-sibling::*/td/text()')\
+        .extract().jion()
+    return value.strip()
