@@ -39,6 +39,6 @@ class MemberItem(scrapy.Item):
     emergency_call = scrapy.Field() # +86.156.5266.7168
     website = scrapy.Field()
     email = scrapy.Field()
-    contact = scrapy.Field(serializer=list) # a list of MemberContactItem
+    contact = scrapy.Field() # a list of MemberContactItem
 
 
