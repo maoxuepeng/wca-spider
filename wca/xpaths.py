@@ -42,6 +42,8 @@ def get_next_member_list_page_url(member_list_page):
     url =  Selector(text=member_list_page)\
         .xpath('//*[@id="directory_result"]/a[not(contains(@style, "display: none;"))][1]/@onmouseover')\
         .extract_first()
+    if url is None:
+        return url
     return _get_next_member_list_page_url(url)
 
 def get_member_links(member_list_page):
@@ -60,89 +62,107 @@ def get_member_id(member_detail_pages_selector):
     value = member_detail_pages_selector\
         .xpath('//*[@class="member_id"][1]/text()')\
         .extract_first()
-    value = value.lstrip('ID:').strip()
+    if value is not None: value = value.lstrip('ID:').strip()
     return value
 
 def get_member_name(member_detail_pages_selector):
     value = member_detail_pages_selector\
         .xpath('//*[@class="member_name"][1]/text()')\
-        .extract_first().strip()
+        .extract_first()
+    if value is not None: value = value.strip()
     return value
 
 def get_member_logo_url(member_detail_pages_selector):
     value = member_detail_pages_selector\
         .xpath('//*[@id="content_right"]/div[2]/div[1]/img/@src')\
-        .extract_first().strip()
+        .extract_first()
+    if value is not None: value = value.strip()
     return value
 
 def get_member_country(member_detail_pages_selector):
     value = member_detail_pages_selector\
-        .xpath('//*[@class="office_row"][1]/div[@class="office_country"][1]/text()')\
-        .extract_first().strip()
+        .xpath('//*[@class="office_country"][1]/text()')\
+        .extract_first()
+    if value is not None: value = value.strip()
     return value
 
 def get_member_city(member_detail_pages_selector):
     value = member_detail_pages_selector\
-        .xpath('//*[@class="office_row"][1]/div[@class="office_entry"][1]/a[1]/text()')\
-        .extract_first().strip()
+        .xpath('//*[@class="office_entry"][1]/a[1]/text()')\
+        .extract_first()
+    if value is not None: value = value.strip()
     return value
 
 def get_member_enrolled_since(member_detail_pages_selector):
     value = member_detail_pages_selector\
         .xpath('//*[@class="member_expire_mainbox"][1]/div[@class="member_expire_entry"][1]/div[@class="member_expire_value"][1]/text()')\
-        .extract_first().strip()
+        .extract_first()
+    if value is not None: value = value.strip()
     return value
 
 def get_member_expires(member_detail_pages_selector):
     value = member_detail_pages_selector\
         .xpath('//*[@class="member_expire_mainbox"][1]/div[@class="member_expire_entry"][2]/div[@class="member_expire_value"][1]/text()')\
-        .extract_first().strip()
+        .extract_first()
+    if value is not None: value = value.strip()
     return value
 
 def get_member_description(member_detail_pages_selector):
     value = member_detail_pages_selector\
         .xpath('//*[@class="memberprofile_row memberprofile_detail"][1]/text()')\
-        .extract_first().strip()
+        .extract_first()
+    if value is not None: value = value.strip()
     return value
 
 def get_member_address(member_detail_pages_selector):
     value = member_detail_pages_selector\
-        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Address:"]/td[2]/span[1]/text()')\
-        .extract_first().strip()
-    return value.replace('<br>', '')
+        .xpath('//table/tr/td[text()="Address:"]/following-sibling::td/span[1]/text()')\
+        .extract_first()
+    if value is not None: value = value.strip()
+    if value is not None: value = value.replace('<br>', '').replace('<br />', '').replace('<br/>', '.')
+    return value
 
 def get_member_telephone(member_detail_pages_selector):
     value = member_detail_pages_selector\
-        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Telephone:"]/td[2]/text()')\
-        .extract_first().strip()
-    return value.replace('.', '')
+        .xpath('//table/tr/td[text()="Telephone:"]/following-sibling::td/text()')\
+        .extract_first()
+    if value is not None: value = value.strip()
+    if value is not None: value.replace('.', '')
+    return value
 
 def get_member_fax(member_detail_pages_selector):
     value = member_detail_pages_selector\
-        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Fax:"]/td[2]/text()')\
-        .extract_first().strip()
-    return value.replace('.', '')
+        .xpath('//table/tr/td[text()="Fax:"]/following-sibling::td/text()')\
+        .extract_first()
+    if value is not None: value = value.strip()
+    if value is not None: value.replace('.', '')
+    return value
 
 def get_member_emergency_call(member_detail_pages_selector):
     value = member_detail_pages_selector\
-        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Emergency Call:"]/td[2]/text()')\
-        .extract_first().strip()
-    return value.replace('.', '')
+        .xpath('//table/tr/td[text()="Emergency Call:"]/following-sibling::td/text()')\
+        .extract_first()
+    if value is not None: value = value.strip()
+    if value is not None: value.replace('.', '')
+    return value
 
 def get_member_website(member_detail_pages_selector):
     value = member_detail_pages_selector\
-        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Website:"]/td[2]/a[1]/@href')\
-        .extract_first().strip()
+        .xpath('//table/tr/td[text()="Website:"]/following-sibling::td/a[1]/@href')\
+        .extract_first()
+    if value is not None: value = value.strip()
     return value
 
 def get_member_email(member_detail_pages_selector):
     value = member_detail_pages_selector\
-        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Email:"]/td[2]/span/a/text()')\
-        .extract().jion()
+        .xpath('//table/tr/td[text()="Email:"]/following-sibling::td/span/a/text()')\
+        .extract()
+    if value is not None: value = "".join(value)
     return value
 
 def get_member_contact(member_detail_pages_selector):
     value = member_detail_pages_selector\
         .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Contact:"]/following-sibling::*/td/text()')\
-        .extract().jion()
-    return value.strip()
+        .extract()
+    if value is not None: value = "".join(value)
+    return value
