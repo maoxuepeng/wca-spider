@@ -4,6 +4,7 @@
 # use seperate xpath utils is easy for testing the xpath functions, which is the core processes of the data crawled.
 
 from scrapy.selector import Selector
+import json
 
 ## parse login page
 
@@ -117,8 +118,8 @@ def get_member_description(member_detail_pages_selector):
 def get_member_address(member_detail_pages_selector):
     value = member_detail_pages_selector\
         .xpath('//table/tr/td[text()="Address:"]/following-sibling::td/span[1]/text()')\
-        .extract_first()
-    if value is not None: value = value.strip()
+        .extract()
+    if value is not None: value = "".join(value)
     if value is not None: value = value.replace('<br>', '').replace('<br />', '').replace('<br/>', '.')
     return value
 
@@ -127,7 +128,7 @@ def get_member_telephone(member_detail_pages_selector):
         .xpath('//table/tr/td[text()="Telephone:"]/following-sibling::td/text()')\
         .extract_first()
     if value is not None: value = value.strip()
-    if value is not None: value.replace('.', '')
+    if value is not None: value = value.replace('.', '')
     return value
 
 def get_member_fax(member_detail_pages_selector):
@@ -135,15 +136,15 @@ def get_member_fax(member_detail_pages_selector):
         .xpath('//table/tr/td[text()="Fax:"]/following-sibling::td/text()')\
         .extract_first()
     if value is not None: value = value.strip()
-    if value is not None: value.replace('.', '')
+    if value is not None: value = value.replace('.', '')
     return value
 
 def get_member_emergency_call(member_detail_pages_selector):
     value = member_detail_pages_selector\
-        .xpath('//table/tr/td[text()="Emergency Call:"]/following-sibling::td/text()')\
+        .xpath('//table/tr/td[text()="Emergency Call:"]/following-sibling::td/span[1]/text()')\
         .extract_first()
     if value is not None: value = value.strip()
-    if value is not None: value.replace('.', '')
+    if value is not None: value = value.replace('.', '')
     return value
 
 def get_member_website(member_detail_pages_selector):
@@ -162,7 +163,6 @@ def get_member_email(member_detail_pages_selector):
 
 def get_member_contact(member_detail_pages_selector):
     value = member_detail_pages_selector\
-        .xpath('//*[@id="content_right"]/table/tbody/tr[td[1]="Contact:"]/following-sibling::*/td/text()')\
+        .xpath('//table/tr[td[text()]="Contact:"]/following-sibling::*/td//text()')\
         .extract()
-    if value is not None: value = "".join(value)
-    return value
+    return "\n".join(value)
