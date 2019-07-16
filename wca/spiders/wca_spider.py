@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.INFO,
 
 class WCASpider(scrapy.spiders.Spider):
     name = 'wca_spider'
-    allowed_domains = ["www.wcainterglobal.com"]
+    #allowed_domains = ["www.wcainterglobal.com"]
     #start_urls = []
 
     # start from login request
@@ -38,7 +38,10 @@ class WCASpider(scrapy.spiders.Spider):
         referer = xpaths.get_login_referer(html)
         remote_addr = xpaths.get_login_remote_addr(html)
         returnurl = xpaths.get_login_return_url(html)
+        if returnurl is None: returnurl = ''
         verifyurl = xpaths.get_login_verify_url(html)
+        if verifyurl is None: verifyurl = ''
+        logging.info('login url: %s', login_url)
 
         post_headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
@@ -63,7 +66,8 @@ class WCASpider(scrapy.spiders.Spider):
                     'password': os.getenv('WCA_PASSWORD')
                 }, 
                 headers=post_headers, 
-                callback=self._start_crawl)
+                callback=self._start_crawl
+                )
         ]
 
     # after login, start parse
@@ -95,52 +99,22 @@ class WCASpider(scrapy.spiders.Spider):
         selector = Selector(text=response.text)
 
         member_item = MemberItem()
-        member_item.add_value(
-            'wca_id', 
-            xpaths.get_member_id(selector))
-        member_item.add_value(
-            'name', 
-            xpaths.get_member_name(selector))
-        member_item.add_value(
-            'logo_url',
-            xpaths.get_member_logo_url(selector))
-        member_item.add_value(
-            'country',
-            xpaths.get_member_country(selector))
-        member_item.add_value(
-            'city',
-            xpaths.get_member_city(selector))
-        member_item.add_value(
-            'enrolled_since',
-            xpaths.get_member_enrolled_since(selector))
-        member_item.add_value(
-            'membership_expires',
-            xpaths.get_member_expires(selector))
-        member_item.add_value(
-            'description',
-            xpaths.get_member_description(selector))
-        member_item.add_value(
-            'address',
-            xpaths.get_member_address(selector))
-        member_item.add_value(
-            'telephone',
-            xpaths.get_member_telephone(selector))
-        member_item.add_value(
-            'fax',
-            xpaths.get_member_fax(selector))
-        member_item.add_value(
-            'emergency_call',
-            xpaths.get_member_emergency_call(selector))
-        member_item.add_value(
-            'website',
-            xpaths.get_member_website(selector))
-        member_item.add_value(
-            'email',
-            xpaths.get_member_email(selector))
+        member_item['wca_id'] = xpaths.get_member_id(selector)
+        member_item['name'] = xpaths.get_member_name(selector)
+        member_item['logo_url'] = xpaths.get_member_logo_url(selector)
+        member_item['country'] = xpaths.get_member_country(selector)
+        member_item['city'] = xpaths.get_member_city(selector)
+        member_item['enrolled_since'] = xpaths.get_member_enrolled_since(selector)
+        member_item['membership_expires'] = xpaths.get_member_expires(selector)
+        member_item['description'] = xpaths.get_member_description(selector)
+        member_item['address'] = xpaths.get_member_address(selector)
+        member_item['telephone'] = xpaths.get_member_telephone(selector)
+        member_item['fax'] = xpaths.get_member_fax(selector)
+        member_item['emergency_call'] = xpaths.get_member_emergency_call(selector)
+        member_item['website'] = xpaths.get_member_website(selector)
+        member_item['email']= xpaths.get_member_email(selector)
 
-        member_item.add_value(
-            'contact',
-            xpaths.get_member_contact(selector))
+        member_item['contact'] = xpaths.get_member_contact(selector)
         
         return member_item
 
@@ -159,3 +133,4 @@ class WCASpider(scrapy.spiders.Spider):
             url = url_template % (country)
             urls.append(url)
         return urls
+
