@@ -12,6 +12,7 @@ from scrapy.loader.processors import MapCompose, Join
 from scrapy.selector import Selector
 import urlparse
 import os
+import json
 import logging
 
 logging.basicConfig(level=logging.INFO,
@@ -115,6 +116,16 @@ class WCASpider(scrapy.spiders.Spider):
 
         url_template = 'https://www.wcainterglobal.com/Directory?networkId=4&pageNumber=1&pageSize=100&searchby=CountryCode&orderby=CountryCity&country=%(Code)s&city=&keyword='
         #
+        countries = self._read_countries()
+        urls = []
+        for country in countries:
+            url = url_template % (country)
+            urls.append(url)
+        return urls
+
+    def _setup_start_urls_4_test(self):
+        url_template = 'https://www.wcainterglobal.com/Directory?networkId=4&pageNumber=1&pageSize=100&searchby=CountryCode&orderby=CountryCity&country=%(Code)s&city=&keyword='
+        #
         countries = [{"Code":"CN","Name":"China"}]
         urls = []
         for country in countries:
@@ -122,3 +133,10 @@ class WCASpider(scrapy.spiders.Spider):
             urls.append(url)
         return urls
 
+    def _read_countries(self):
+        file_path = os.getenv('COUNTRIES_FILE_PATH'), 'var/data/countries.json')
+        if not os.path.isfile(file_path):
+            logging.error('countries file %s does not exist', file_path)
+            return []
+        with open(file_path, mode='r') as fp:
+            return json.loads(fp.read())
