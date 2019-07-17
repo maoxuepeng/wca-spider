@@ -134,7 +134,7 @@ class WCASpider(scrapy.spiders.Spider):
         return urls
 
     def _read_countries(self):
-        file_path = os.getenv('COUNTRIES_FILE_PATH'), 'var/data/countries.json')
+        file_path = os.getenv('COUNTRIES_FILE_PATH', 'var/data/countries.json')
         if not os.path.isfile(file_path):
             logging.error('countries file %s does not exist', file_path)
             return []
