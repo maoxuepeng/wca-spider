@@ -39,6 +39,7 @@ class WCASpider(scrapy.spiders.Spider):
         remote_addr = xpaths.get_login_remote_addr(html)
         returnurl = xpaths.get_login_return_url(html)
         verifyurl = xpaths.get_login_verify_url(html)
+        logging.info('login url: %s', login_url)
 
         post_headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
@@ -63,7 +64,8 @@ class WCASpider(scrapy.spiders.Spider):
                     'password': os.getenv('WCA_PASSWORD')
                 }, 
                 headers=post_headers, 
-                callback=self._start_crawl)
+                callback=self._start_crawl
+                )
         ]
 
     # after login, start parse
